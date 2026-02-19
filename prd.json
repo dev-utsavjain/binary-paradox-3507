@@ -1,0 +1,250 @@
+{
+  "project_metadata": {
+    "project_name": "TaskFlow",
+    "project_type": "productivity",
+    "description": "A modern, responsive to-do application that helps users organize and track their daily tasks with an intuitive interface and real-time updates.",
+    "core_purpose": "Simplify task management and boost productivity by providing a clean, efficient way to create, track, and complete daily tasks",
+    "target_audience": "Individuals, students, professionals, and teams seeking a simple yet powerful task management solution",
+    "key_features": ["Task creation and editing", "Status tracking (active/completed)", "Filter and sort tasks", "Responsive design", "Real-time updates", "Clean modern UI"]
+  },
+  "frontend": {
+    "pages": [
+      {
+        "page_name": "Task Dashboard",
+        "route": "/",
+        "show_in_nav": true,
+        "nav_order": 1,
+        "purpose": "Main interface for viewing, managing, and organizing all tasks",
+        "sections": ["Hero with app title", "Task input form", "Filter buttons (All, Active, Completed)", "Task list display", "Task statistics (total/completed/active)", "Empty state when no tasks"],
+        "content_notes": "Features a prominent 'Add Task' input at top, three filter buttons below, task cards displayed in a clean list format with checkboxes, titles, descriptions, and action buttons. Shows completion percentage and task counts in footer.",
+        "data_needs": ["/api/tasks"],
+        "is_protected": false
+      },
+      {
+        "page_name": "About",
+        "route": "/about",
+        "show_in_nav": true,
+        "nav_order": 2,
+        "purpose": "Information about the app features and benefits",
+        "sections": ["App overview", "Key features showcase", "How it works", "Contact information"],
+        "content_notes": "Clean about page explaining TaskFlow's simplicity and effectiveness, with visual icons for each feature and a simple contact form or email link.",
+        "data_needs": [],
+        "is_protected": false
+      }
+    ],
+    "navigation": {
+      "type": "header",
+      "position": "top",
+      "style": "horizontal",
+      "has_logo": true,
+      "has_search": false,
+      "extra_items": ["Theme toggle (dark/light)"]
+    },
+    "theme": {
+      "design_dna": "GLASSMORPHISM",
+      "color_scheme": "auto",
+      "primary_color": "#4F46E5",
+      "secondary_color": "#7C3AED",
+      "accent_color": "#06B6D4",
+      "font_family": "Inter",
+      "font_type": "sans",
+      "border_radius": "lg",
+      "shadow_style": "soft",
+      "animation_style": "moderate",
+      "interaction_style": "subtle"
+    },
+    "components": [
+      {
+        "component_name": "TaskCard",
+        "type": "shared",
+        "used_on": ["Task Dashboard"],
+        "purpose": "Displays individual task with title, description, status, and actions",
+        "props": ["task", "onToggle", "onDelete", "onUpdate"]
+      },
+      {
+        "component_name": "TaskInput",
+        "type": "shared",
+        "used_on": ["Task Dashboard"],
+        "purpose": "Form component for creating new tasks",
+        "props": ["onSubmit", "loading"]
+      },
+      {
+        "component_name": "FilterButtons",
+        "type": "shared",
+        "used_on": ["Task Dashboard"],
+        "purpose": "Filter control for task status (All, Active, Completed)",
+        "props": ["currentFilter", "onFilterChange", "taskCounts"]
+      },
+      {
+        "component_name": "TaskStats",
+        "type": "shared",
+        "used_on": ["Task Dashboard"],
+        "purpose": "Shows task completion statistics",
+        "props": ["totalTasks", "completedTasks", "activeTasks"]
+      },
+      {
+        "component_name": "EmptyState",
+        "type": "shared",
+        "used_on": ["Task Dashboard"],
+        "purpose": "Display when no tasks exist",
+        "props": ["onAddTask"]
+      }
+    ],
+    "layout": {
+      "has_header": true,
+      "has_footer": true,
+      "has_sidebar": false,
+      "max_width": "container",
+      "spacing": "normal",
+      "footer_links": ["About", "Privacy", "Terms"]
+    }
+  },
+  "backend": {
+    "requires_backend": true,
+    "apis": [
+      {
+        "endpoint": "/api/tasks",
+        "method": "GET",
+        "purpose": "Retrieve all tasks with optional filtering",
+        "request_body": {},
+        "response": {
+          "tasks": "array of task objects",
+          "total": "integer",
+          "active": "integer",
+          "completed": "integer"
+        },
+        "auth": false,
+        "used_by": ["Task Dashboard"]
+      },
+      {
+        "endpoint": "/api/tasks",
+        "method": "POST",
+        "purpose": "Create a new task",
+        "request_body": {
+          "title": "string (required, max 100 chars)",
+          "description": "string (optional, max 500 chars)",
+          "completed": "boolean (default: false)"
+        },
+        "response": {
+          "id": "integer",
+          "title": "string",
+          "description": "string",
+          "completed": "boolean",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "auth": false,
+        "used_by": ["Task Dashboard"]
+      },
+      {
+        "endpoint": "/api/tasks/:id",
+        "method": "PUT",
+        "purpose": "Update an existing task",
+        "request_body": {
+          "title": "string (optional)",
+          "description": "string (optional)",
+          "completed": "boolean (optional)"
+        },
+        "response": {
+          "id": "integer",
+          "title": "string",
+          "description": "string",
+          "completed": "boolean",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "auth": false,
+        "used_by": ["Task Dashboard"]
+      },
+      {
+        "endpoint": "/api/tasks/:id",
+        "method": "DELETE",
+        "purpose": "Delete a task",
+        "request_body": {},
+        "response": {
+          "message": "string",
+          "deleted_id": "integer"
+        },
+        "auth": false,
+        "used_by": ["Task Dashboard"]
+      },
+      {
+        "endpoint": "/api/tasks/:id/toggle",
+        "method": "PATCH",
+        "purpose": "Toggle task completion status",
+        "request_body": {},
+        "response": {
+          "id": "integer",
+          "title": "string",
+          "description": "string",
+          "completed": "boolean",
+          "created_at": "timestamp",
+          "updated_at": "timestamp"
+        },
+        "auth": false,
+        "used_by": ["Task Dashboard"]
+      }
+    ],
+    "database": {
+      "models": [
+        {
+          "model_name": "Task",
+          "fields": {
+            "id": "integer, primary key, auto-increment",
+            "title": "string, not null, max 100 characters",
+            "description": "string, nullable, max 500 characters",
+            "completed": "boolean, default false",
+            "created_at": "timestamp, auto set on creation",
+            "updated_at": "timestamp, auto update on change"
+          },
+          "relationships": [],
+          "indexes": ["completed", "created_at"]
+        }
+      ]
+    },
+    "authentication": {
+      "required": false,
+      "type": "none",
+      "providers": [],
+      "protected_apis": []
+    },
+    "external_apis": [],
+    "file_storage": {
+      "required": false,
+      "types": [],
+      "max_size": ""
+    }
+  },
+  "technical_specs": {
+    "frontend": {
+      "framework": "React",
+      "routing": "react-router-dom",
+      "styling": "Tailwind CSS",
+      "state_management": "React Context",
+      "animation": "Framer Motion",
+      "dependencies": [
+        "react@^18.2.0",
+        "react-dom@^18.2.0",
+        "react-router-dom@^6.15.0",
+        "framer-motion",
+        "lucide-react",
+        "clsx",
+        "tailwind-merge",
+        "axios"
+      ]
+    },
+    "backend": {
+      "framework": "Standard Library",
+      "database": "PostgreSQL",
+      "orm": "GORM",
+      "auth": "None",
+      "dependencies": [
+        "github.com/gorilla/mux",
+        "gorm.io/gorm",
+        "gorm.io/driver/postgres",
+        "github.com/lib/pq",
+        "github.com/go-playground/validator/v10"
+      ]
+    }
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-02-19T09:48:36.764980104Z",
+  "total_tasks": 14,
+  "completed_tasks": 3,
+  "failed_tasks": 0,
+  "status": "in_progress",
+  "tasks": [
+    {
+      "id": "task_001",
+      "category": "database",
+      "type": "model",
+      "title": "Task Model with GORM",
+      "description": "Define the Task model using GORM ORM for PostgreSQL. Fields: id (int, primary key, auto-increment), title (string, not null, max 100), description (string, nullable, max 500), completed (boolean, default false), created_at (timestamp, auto set), updated_at (timestamp, auto update). Add composite indexes on completed and created_at. Include JSON tags for API serialization.",
+      "status": "pending",
+      "dependencies": [],
+      "file_path": "backend/models/Task.go"
+    },
+    {
+      "id": "task_002",
+      "category": "backend",
+      "type": "api",
+      "title": "GET /api/tasks Endpoint",
+      "description": "Implement GET /api/tasks handler using gorilla/mux. Accept optional query params: filter (all|active|completed). Return JSON: {total:int, active:int, completed:int, tasks:[Task]}. Use GORM to query tasks, apply filter, and count totals. No auth required. Handle DB errors with 500 status.",
+      "status": "pending",
+      "dependencies": [
+        "task_001"
+      ],
+      "file_path": "backend/routes/get_tasks.go"
+    },
+    {
+      "id": "task_003",
+      "category": "backend",
+      "type": "api",
+      "title": "POST /api/tasks Endpoint",
+      "description": "Implement POST /api/tasks handler. Validate incoming JSON: title (required, ≤100 chars), description (optional, ≤500 chars), completed (optional bool, default false). Use go-playground/validator. Insert new Task via GORM, set created_at \u0026 updated_at. Return 201 + full Task JSON on success, 400 on validation failure, 500 on DB error.",
+      "status": "pending",
+      "dependencies": [
+        "task_001"
+      ],
+      "file_path": "backend/routes/create_task.go"
+    },
+    {
+      "id": "task_004",
+      "category": "backend",
+      "type": "api",
+      "title": "PUT /api/tasks/:id Endpoint",
+      "description": "Implement PUT /api/tasks/:id handler. Extract id param. Accept JSON body with optional fields: title, description, completed. Validate with go-playground/validator. Use GORM First to locate task, update provided fields, set updated_at. Return 200 + updated Task JSON, 404 if not found, 400 on validation error, 500 on DB error.",
+      "status": "pending",
+      "dependencies": [
+        "task_001"
+      ],
+      "file_path": "backend/routes/update_task.go"
+    },
+    {
+      "id": "task_005",
+      "category": "backend",
+      "type": "api",
+      "title": "DELETE /api/tasks/:id Endpoint",
+      "description": "Implement DELETE /api/tasks/:id handler. Extract id param. Use GORM Delete to remove Task by id. Return 200 + JSON {deleted_id:int, message:string} on success, 404 if not found, 500 on DB error.",
+      "status": "pending",
+      "dependencies": [
+        "task_001"
+      ],
+      "file_path": "backend/routes/delete_task.go"
+    },
+    {
+      "id": "task_006",
+      "category": "backend",
+      "type": "api",
+      "title": "PATCH /api/tasks/:id/toggle Endpoint",
+      "description": "Implement PATCH /api/tasks/:id/toggle handler. Extract id param. Use GORM First to fetch task, invert completed boolean, set updated_at. Return 200 + updated Task JSON, 404 if not found, 500 on DB error.",
+      "status": "pending",
+      "dependencies": [
+        "task_001"
+      ],
+      "file_path": "backend/routes/toggle_task.go"
+    },
+    {
+      "id": "task_007",
+      "category": "frontend",
+      "type": "component",
+      "title": "TaskCard Component",
+      "description": "React functional component TaskCard.tsx with TypeScript. Props: task{id,title,description,completed}, onToggle(), onDelete(), onUpdate(). Display glassmorphic card using Tailwind with soft shadows \u0026 lg border-radius. Show checkbox, title (strikethrough when completed), truncated description, edit \u0026 delete icons. Use Framer Motion for subtle hover lift. Emit events on user actions.",
+      "status": "pending",
+      "dependencies": [],
+      "file_path": "frontend/src/components/TaskCard.tsx"
+    },
+    {
+      "id": "task_008",
+      "category": "frontend",
+      "type": "component",
+      "title": "TaskInput Component",
+      "description": "React functional component TaskInput.tsx with TypeScript. Props: onSubmit({title,description}), loading. Render glassmorphic form with Inter font, primary color accents. Controlled inputs: title (required, max 100), description (optional, max 500). Show loading spinner on submit button when loading=true. Use axios to POST /api/tasks. Clear form after successful submit.",
+      "status": "pending",
+      "dependencies": [],
+      "file_path": "frontend/src/components/TaskInput.tsx"
+    },
+    {
+      "id": "task_009",
+      "category": "frontend",
+      "type": "component",
+      "title": "FilterButtons Component",
+      "description": "React functional component FilterButtons.tsx with TypeScript. Props: currentFilter ('all'|'active'|'completed'), onFilterChange(filter), taskCounts{all,active,completed}. Render three glassmorphic buttons with soft shadows, active state highlighted with primary color. Display count badges on each button. Use Framer Motion for subtle tap animation.",
+      "status": "pending",
+      "dependencies": [],
+      "file_path": "frontend/src/components/FilterButtons.tsx"
+    },
+    {
+      "id": "task_010",
+      "category": "frontend",
+      "type": "component",
+      "title": "TaskStats Component",
+      "description": "React functional component TaskStats.tsx with TypeScript. Props: totalTasks, completedTasks, activeTasks. Render glassmorphic card showing circular progress bar (completed/total) using accent color, plus three labeled stats with Inter font. Animate numbers with Framer Motion on change.",
+      "status": "pending",
+      "dependencies": [],
+      "file_path": "frontend/src/components/TaskStats.tsx"
+    },
+    {
+      "id": "task_011",
+      "category": "frontend",
+      "type": "component",
+      "title": "EmptyState Component",
+      "description": "React functional component EmptyState.tsx with TypeScript. Props: onAddTask(). Centered glassmorphic card with large icon (lucide-react), welcoming message, and prominent CTA button using primary color. Button triggers onAddTask to focus TaskInput.",
+      "status": "pending",
+      "dependencies": [],
+      "file_path": "frontend/src/components/EmptyState.tsx"
+    },
+    {
+      "id": "task_012",
+      "category": "frontend",
+      "type": "page",
+      "title": "Task Dashboard Page",
+      "description": "React page component TaskDashboard.tsx. Sections: Hero with app title, TaskInput, FilterButtons, TaskList (map TaskCard), TaskStats, EmptyState when tasks empty. Use React Context for global task state. Fetch tasks via axios GET /api/tasks on mount and after mutations. Implement filter logic locally. Handle loading \u0026 error states. Responsive container layout with Tailwind, soft animations via Framer Motion.",
+      "status": "completed",
+      "dependencies": [
+        "task_007",
+        "task_008",
+        "task_009",
+        "task_010",
+        "task_011"
+      ],
+      "file_path": "frontend/src/pages/TaskDashboard.tsx",
+      "started_at": "2026-02-19T09:48:39.624639281Z",
+      "completed_at": "2026-02-19T09:49:11.660362557Z"
+    },
+    {
+      "id": "task_013",
+      "category": "frontend",
+      "type": "page",
+      "title": "About Page",
+      "description": "React page component About.tsx. Sections: App overview with glassmorphic hero, Key features showcase with icons (lucide-react), How it works steps, Contact information with mailto link. Use Inter font, Tailwind layout, moderate Framer Motion scroll animations. Responsive design, max-width container.",
+      "status": "completed",
+      "dependencies": [],
+      "file_path": "frontend/src/pages/About.tsx",
+      "started_at": "2026-02-19T09:49:11.762175003Z",
+      "completed_at": "2026-02-19T09:49:38.59198867Z"
+    },
+    {
+      "id": "task_014",
+      "category": "frontend",
+      "type": "page",
+      "title": "App.jsx Main Entry",
+      "description": "React App.jsx with React Router v6. Define routes: '/' -\u003e TaskDashboard, '/about' -\u003e About. Include top header navigation (glassmorphic, horizontal) with logo, nav links (Dashboard, About), theme toggle (dark/light) using Tailwind darkMode class. Provide system-wide context: frontend pages {TaskDashboard/,About/}, backend endpoints {GET,POST,PUT,DELETE,PATCH /api/tasks}, database model {Task}. Wrap with ThemeProvider context. Use Framer Motion page transitions.",
+      "status": "completed",
+      "dependencies": [
+        "task_012",
+        "task_013"
+      ],
+      "file_path": "frontend/src/App.jsx",
+      "started_at": "2026-02-19T09:49:38.750255841Z",
+      "completed_at": "2026-02-19T09:49:40.915297966Z"
+    }
+  ]
+}
